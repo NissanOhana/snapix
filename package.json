@@ -1,0 +1,19 @@
+{
+  "name": "snapix",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently --kill-others --prefix-colors \"auto\" \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd packages/snapix-server && npm run dev",
+    "dev:client": "cd packages/snapix-app && npm run dev",
+    "build": "yarn workspace snapix-app build && yarn workspace snapix-server build",
+    "start": "yarn workspace snapix-server start",
+    "setup": "yarn install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
