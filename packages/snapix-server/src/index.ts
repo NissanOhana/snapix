@@ -47,6 +47,16 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
+// Health check endpoint for deployment platforms
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV 
+  });
+});
+
 // Session configuration with MongoDB store for persistence
 app.use(
   session({
@@ -118,7 +128,7 @@ app.use('/api/trpc', trpcExpress.createExpressMiddleware({
   createContext,
 }));
 
-// Health check
+// API Health check (for external monitoring)
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
