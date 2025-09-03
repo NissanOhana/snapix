@@ -12,6 +12,11 @@ export interface IUser extends Document {
     accessToken?: string;
     refreshToken?: string;
   };
+  googleId?: string;
+  googleTokens?: {
+    accessToken?: string;
+    refreshToken?: string;
+  };
   refreshToken?: string;
   lastLogin?: Date;
   isActive: boolean;
@@ -64,6 +69,16 @@ const UserSchema: Schema = new Schema(
       accessToken: String,
       refreshToken: String,
     },
+    googleId: {
+      type: String,
+      sparse: true,
+      unique: true,
+      index: true,
+    },
+    googleTokens: {
+      accessToken: String,
+      refreshToken: String,
+    },
     refreshToken: {
       type: String,
       select: false,
@@ -87,6 +102,7 @@ const UserSchema: Schema = new Schema(
       transform: (_, ret) => {
         delete (ret as any).password;
         delete (ret as any).facebookTokens;
+        delete (ret as any).googleTokens;
         delete (ret as any).refreshToken;
         delete (ret as any).__v;
         return ret;

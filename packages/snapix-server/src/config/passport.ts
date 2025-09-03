@@ -1,5 +1,6 @@
 import passport from 'passport';
 import { Strategy as FacebookStrategy } from 'passport-facebook';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import User from '../models/User';
 
@@ -48,6 +49,71 @@ passport.use(
             facebookTokens: { accessToken, refreshToken },
             lastLogin: new Date(),
           });
+        }
+
+        return done(null, user);
+      } catch (error) {
+        return done(error as Error, false);
+      }
+    }
+  )
+);
+
+// Google Strategy
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL!,
+      scope: ['profile', 'email'],
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        // Debug logging
+        console.log('Google Profile:', JSON.stringify(profile, null, 2));
+        console.log('Profile emails:', profile.emails);
+        
+        let user = await User.findOne({ googleId: profile.id });
+
+        if (user) {
+          // Update existing user
+          user.googleTokens = { accessToken, refreshToken };
+          user.lastLogin = new Date();
+          await user.save();
+        } else {
+          // Check if user exists with same email
+          const email = profile.emails?.[0]?.value;
+          let existingUser = null;
+          
+          if (email) {
+            existingUser = await User.findOne({ email });
+          }
+
+          if (existingUser) {
+            // Link Google account to existing user
+            existingUser.googleId = profile.id;
+            existingUser.googleTokens = { accessToken, refreshToken };
+            existingUser.lastLogin = new Date();
+            await existingUser.save();
+            user = existingUser;
+          } else {
+            // Create new user
+            const displayName = profile.displayName || 
+              `${profile.name?.givenName || ''} ${profile.name?.familyName || ''}`.trim() ||
+              `User${profile.id}`;
+
+            user = await User.create({
+              googleId: profile.id,
+              username: `google_${profile.id}`,
+              email: email || `google_${profile.id}@gmail.local`,
+              name: displayName,
+              password: `google_oauth_${profile.id}_${Date.now()}`, // Random password for OAuth users
+              profilePicture: profile.photos?.[0]?.value,
+              googleTokens: { accessToken, refreshToken },
+              lastLogin: new Date(),
+            });
+          }
         }
 
         return done(null, user);

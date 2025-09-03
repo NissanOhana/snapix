@@ -43,6 +43,10 @@ export const useAuthStore = create<AuthState>()(
       window.location.href = `${import.meta.env.VITE_API_URL}/auth/facebook`;
     },
 
+    loginWithGoogle: () => {
+      window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
+    },
+
     loginAsGuest: () => {
       const guestUser: User = {
         _id: `guest_${Date.now()}`,

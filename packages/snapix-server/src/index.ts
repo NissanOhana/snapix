@@ -148,6 +148,42 @@ app.get('/api/auth/facebook/callback',
   }
 );
 
+// Google OAuth routes
+app.get('/api/auth/google',
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+  })
+);
+
+app.get('/api/auth/google/callback',
+  passport.authenticate('google', { 
+    session: false,
+    failureRedirect: `${process.env.CLIENT_URL}/login?error=auth_failed` 
+  }),
+  async (req, res) => {
+    try {
+      console.log('Google callback - User object:', req.user);
+      const user = req.user as any;
+      if (!user) {
+        console.error('No user object after Google auth');
+        return res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
+      }
+
+      const authService = (await import('./services/auth.service')).default;
+      const { accessToken, refreshToken } = authService.generateTokens(user);
+      await authService.saveRefreshToken((user._id as any).toString(), refreshToken);
+
+      // Redirect with tokens
+      res.redirect(
+        `${process.env.CLIENT_URL}/auth/callback?token=${accessToken}&refresh=${refreshToken}`
+      );
+    } catch (error) {
+      console.error('Google auth callback error:', error);
+      res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
+    }
+  }
+);
+
 // tRPC endpoint
 app.use('/api/trpc', trpcExpress.createExpressMiddleware({
   router: appRouter,
