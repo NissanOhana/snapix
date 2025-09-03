@@ -140,11 +140,43 @@ app.get('/api/health', (req, res) => {
 
 // Serve React app in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../../../packages/snapix-app/dist')));
+  // Multiple possible paths for different deployment structures
+  const possibleStaticPaths = [
+    path.join(__dirname, '../../../packages/snapix-app/dist'),
+    path.join(__dirname, '../../snapix-app/dist'),
+    path.join(__dirname, '../snapix-app/dist'),
+    path.join(process.cwd(), 'packages/snapix-app/dist'),
+    path.join(process.cwd(), 'dist')
+  ];
+
+  let staticPath = null;
+  const fs = require('fs');
   
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../../packages/snapix-app/dist/index.html'));
-  });
+  for (const testPath of possibleStaticPaths) {
+    if (fs.existsSync(testPath)) {
+      staticPath = testPath;
+      break;
+    }
+  }
+
+  if (staticPath) {
+    console.log(`📁 Serving static files from: ${staticPath}`);
+    app.use(express.static(staticPath));
+    
+    app.get('*', (req, res) => {
+      const indexPath = path.join(staticPath, 'index.html');
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        res.status(404).send('Static files not found');
+      }
+    });
+  } else {
+    console.error('❌ Could not find static files directory');
+    app.get('*', (req, res) => {
+      res.status(500).send('Static files not configured properly');
+    });
+  }
 }
 
 const PORT = process.env.PORT || 5000;
@@ -152,4 +184,15 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
   console.log(`📡 tRPC endpoint: http://localhost:${PORT}/api/trpc`);
+  console.log(`🏠 Working directory: ${process.cwd()}`);
+  console.log(`📂 __dirname: ${__dirname}`);
+  
+  // Log available directories for debugging
+  const fs = require('fs');
+  try {
+    const rootFiles = fs.readdirSync(process.cwd());
+    console.log(`📁 Root directory contents: ${rootFiles.join(', ')}`);
+  } catch (e) {
+    console.log('Could not read root directory');
+  }
 });
