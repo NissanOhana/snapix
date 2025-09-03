@@ -11,8 +11,8 @@ passport.use(
       clientID: process.env.FACEBOOK_APP_ID!,
       clientSecret: process.env.FACEBOOK_APP_SECRET!,
       callbackURL: process.env.FACEBOOK_CALLBACK_URL!,
-      // Only request fields that don't require additional permissions
-      profileFields: ['id', 'displayName', 'name', 'photos'],
+      // Request only basic profile fields for ads management
+      profileFields: ['id', 'displayName', 'name'],
       enableProof: true,
       passReqToCallback: false,
     },
@@ -45,7 +45,7 @@ passport.use(
             email: email,
             name: displayName,
             password: `facebook_oauth_${profile.id}_${Date.now()}`, // Random password for OAuth users
-            profilePicture: profile.photos?.[0]?.value,
+            profilePicture: null, // Not requesting photos for ads management
             facebookTokens: { accessToken, refreshToken },
             lastLogin: new Date(),
           });
@@ -110,7 +110,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.
               email: email || `google_${profile.id}@gmail.local`,
               name: displayName,
               password: `google_oauth_${profile.id}_${Date.now()}`, // Random password for OAuth users
-              profilePicture: profile.photos?.[0]?.value,
+              profilePicture: null, // Not requesting photos for ads management
               googleTokens: { accessToken, refreshToken },
               lastLogin: new Date(),
             });

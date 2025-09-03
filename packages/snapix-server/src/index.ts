@@ -109,12 +109,11 @@ app.use(
 app.use(passport.initialize() as any);
 app.use(passport.session() as any);
 
-// Facebook OAuth routes (still needed for initial auth flow)
-// Note: Start with minimal scope - add 'email' later after Facebook app approval
+// Facebook OAuth routes for ads management
 app.get('/api/auth/facebook',
   passport.authenticate('facebook', {
-    // Request only minimal, non-reviewed permission in dev
-    scope: ['public_profile'],
+    // Request only ads management permissions
+    scope: ['ads_management', 'ads_read', 'business_management', 'read_insights'],
   })
 );
 
