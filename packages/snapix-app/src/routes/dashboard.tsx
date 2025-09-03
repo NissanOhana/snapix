@@ -31,10 +31,7 @@ function DashboardPage() {
     isLoadingSummary, 
     refreshCampaigns, 
     isRefreshing,
-    campaignsError,
-    summaryError,
-    getTopPerformingCampaigns,
-    getCampaignsByStatus
+    campaignsError
   } = useCampaigns();
 
   if (!isAuthenticated) {
@@ -199,28 +196,28 @@ function DashboardPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <StatCard
                     title="סה״כ הוצאה"
-                    value={formatCurrency(summary?.total_spend || 0)}
+                    value={formatCurrency((summary as any)?.total_spend || 0)}
                     icon={DollarSign}
                     color="text-green-600"
                     loading={isLoadingSummary}
                   />
                   <StatCard
                     title="סה״כ הופעות"
-                    value={formatNumber(summary?.total_impressions || 0)}
+                    value={formatNumber((summary as any)?.total_impressions || 0)}
                     icon={Eye}
                     color="text-blue-600"
                     loading={isLoadingSummary}
                   />
                   <StatCard
                     title="סה״כ לחיצות"
-                    value={formatNumber(summary?.total_clicks || 0)}
+                    value={formatNumber((summary as any)?.total_clicks || 0)}
                     icon={MousePointer}
                     color="text-purple-600"
                     loading={isLoadingSummary}
                   />
                   <StatCard
                     title="קמפיינים פעילים"
-                    value={summary?.active_campaigns || 0}
+                    value={(summary as any)?.active_campaigns || 0}
                     icon={Activity}
                     color="text-orange-600"
                     loading={isLoadingSummary}
@@ -246,7 +243,7 @@ function DashboardPage() {
                 />
                 <StatCard
                   title="סה״כ קמפיינים"
-                  value={summary?.total_campaigns || 0}
+                  value={(summary as any)?.total_campaigns || 0}
                   icon={Activity}
                   color="text-rose-600"
                   loading={isLoadingSummary}
@@ -276,7 +273,7 @@ function DashboardPage() {
                     <div className="p-6 text-center">
                       <p className="text-red-600 hebrew-text">שגיאה בטעינת הקמפיינים: {campaignsError.message}</p>
                     </div>
-                  ) : campaigns.length > 0 ? (
+                  ) : (campaigns as any[])?.length > 0 ? (
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-50">
                         <tr>
@@ -304,7 +301,7 @@ function DashboardPage() {
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
-                        {campaigns.slice(0, 10).map((campaign: any) => (
+                        {(campaigns as any[])?.slice(0, 10).map((campaign: any) => (
                           <CampaignRow key={campaign.id} campaign={campaign} />
                         ))}
                       </tbody>
