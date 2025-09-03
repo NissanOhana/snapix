@@ -49,7 +49,7 @@ export const useFacebookAuth = () => {
           success: true,
           requiresAccountSelection: true,
           adAccounts: result.adAccounts,
-          tempAccessToken: result._tempAccessToken,
+          _tempAccessToken: result._tempAccessToken,
         };
       }
       

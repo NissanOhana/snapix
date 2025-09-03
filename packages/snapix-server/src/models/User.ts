@@ -85,10 +85,10 @@ const UserSchema: Schema = new Schema(
     timestamps: true,
     toJSON: {
       transform: (_, ret) => {
-        delete ret.password;
-        delete ret.facebookTokens;
-        delete ret.refreshToken;
-        delete ret.__v;
+        delete (ret as any).password;
+        delete (ret as any).facebookTokens;
+        delete (ret as any).refreshToken;
+        delete (ret as any).__v;
         return ret;
       },
     },

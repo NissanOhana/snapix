@@ -25,7 +25,7 @@ export const optionalEnvVars = {
 
 // Validate required environment variables
 const missingVars = Object.entries(requiredEnvVars)
-  .filter(([key, value]) => !value)
+  .filter(([, value]) => !value)
   .map(([key]) => key);
 
 if (missingVars.length > 0) {

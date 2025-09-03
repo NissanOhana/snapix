@@ -159,23 +159,6 @@ export class FacebookService {
     }
   }
 
-  // Helper method to make Facebook API calls with retry logic
-  private async makeApiCall(url: string, options: any = {}, retries = 3): Promise<any> {
-    for (let attempt = 1; attempt <= retries; attempt++) {
-      try {
-        const response = await axios.get(url, options);
-        return response.data;
-      } catch (error: any) {
-        // Rate limit or server error - retry
-        if ((error.response?.status === 429 || error.response?.status >= 500) && attempt < retries) {
-          const waitTime = 1000 * attempt; // Exponential backoff
-          await new Promise(resolve => setTimeout(resolve, waitTime));
-          continue;
-        }
-        throw error;
-      }
-    }
-  }
 }
 
 export default new FacebookService();

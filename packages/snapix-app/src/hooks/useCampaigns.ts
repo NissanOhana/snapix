@@ -66,28 +66,30 @@ export const useCampaigns = (initialFilters: CampaignFilters = {}) => {
 
   // Helper function to get campaigns by status
   const getCampaignsByStatus = (status: string) => {
-    return campaignsData?.data?.filter(campaign => 
+    const campaigns = (campaignsData?.success && 'data' in campaignsData) ? campaignsData.data as any[] : [];
+    return campaigns.filter((campaign: any) => 
       campaign.status.toLowerCase() === status.toLowerCase()
-    ) || [];
+    );
   };
 
   // Helper function to get top performing campaigns
   const getTopPerformingCampaigns = (limit: number = 5) => {
-    return [...(campaignsData?.data || [])]
-      .sort((a, b) => (b.performance_metrics?.roas || 0) - (a.performance_metrics?.roas || 0))
+    const campaigns = (campaignsData?.success && 'data' in campaignsData) ? campaignsData.data as any[] : [];
+    return [...campaigns]
+      .sort((a: any, b: any) => (b.performance_metrics?.roas || 0) - (a.performance_metrics?.roas || 0))
       .slice(0, limit);
   };
 
   return {
     // Data
-    campaigns: campaignsData?.data || [],
+    campaigns: (campaignsData?.success && 'data' in campaignsData) ? campaignsData.data : [],
     campaignsMetadata: {
-      count: campaignsData?.count || 0,
-      cached: campaignsData?.cached || false,
+      count: (campaignsData?.success && 'count' in campaignsData) ? campaignsData.count : 0,
+      cached: (campaignsData?.success && 'cached' in campaignsData) ? campaignsData.cached : false,
       timestamp: campaignsData?.timestamp,
     },
     
-    summary: summaryData?.data || null,
+    summary: (summaryData?.success && 'data' in summaryData) ? summaryData.data : null,
     
     // Loading states
     isLoadingCampaigns,

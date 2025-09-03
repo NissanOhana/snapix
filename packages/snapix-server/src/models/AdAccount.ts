@@ -71,8 +71,8 @@ const AdAccountSchema: Schema = new Schema(
     timestamps: true,
     toJSON: {
       transform: (_, ret) => {
-        delete ret.access_token;
-        delete ret.__v;
+        delete (ret as any).access_token;
+        delete (ret as any).__v;
         return ret;
       },
     },

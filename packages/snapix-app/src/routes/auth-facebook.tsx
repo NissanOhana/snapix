@@ -111,7 +111,7 @@ function AuthFacebookPage() {
       .then((result) => {
         if (result.requiresAccountSelection && result.adAccounts) {
           setAdAccounts(result.adAccounts);
-          setTempAccessToken(result.tempAccessToken || '');
+          setTempAccessToken(result._tempAccessToken || '');
           setStep('select-account');
         } else {
           setStep('completed');

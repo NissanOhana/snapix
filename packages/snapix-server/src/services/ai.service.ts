@@ -13,7 +13,7 @@ interface UserConversation {
   lastActivity: Date;
 }
 
-interface AIServiceStats {
+export interface AIServiceStats {
   totalRequests: number;
   totalUsers: number;
   averageResponseTime: number;

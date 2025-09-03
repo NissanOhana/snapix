@@ -126,7 +126,7 @@ export const authRouter = router({
     }),
 
   logout: protectedProcedure.mutation(async ({ ctx }) => {
-    await authService.revokeRefreshToken(ctx.user._id.toString());
+    await authService.revokeRefreshToken((ctx.user._id as any).toString());
     return { message: 'Logged out successfully' };
   }),
 });

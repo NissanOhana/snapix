@@ -14,6 +14,8 @@ export const facebookAuthRouter = router({
         const { code } = input;
         const userEmail = ctx.user.email;
         
+        console.log(`🔗 Processing Facebook OAuth for user: ${userEmail}`);
+        
         // Construct the redirect URI
         const redirectUri = `${optionalEnvVars.CLIENT_URL}/auth-facebook`;
         

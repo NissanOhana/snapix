@@ -11,11 +11,11 @@ export class AuthService {
 
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET!, {
       expiresIn: process.env.JWT_EXPIRE || '7d',
-    });
+    } as jwt.SignOptions);
 
     const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET!, {
       expiresIn: process.env.JWT_REFRESH_EXPIRE || '30d',
-    });
+    } as jwt.SignOptions);
 
     return { accessToken, refreshToken };
   }

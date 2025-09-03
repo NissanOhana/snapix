@@ -126,8 +126,8 @@ export const useAI = () => {
     isLoadingStats,
     
     // AI service status
-    aiHealth: healthData?.data || null,
-    aiStats: statsData?.data || null,
+    aiHealth: (healthData?.success && 'data' in healthData) ? healthData.data : null,
+    aiStats: (statsData?.success && 'data' in statsData) ? statsData.data : null,
     quickHelp: quickHelpData?.data || [],
     
     // Actions

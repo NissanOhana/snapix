@@ -41,8 +41,8 @@ app.use(cors({
 }));
 
 // General middleware
-app.use(compression());
-app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+app.use(compression() as any);
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev') as any);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
@@ -76,12 +76,12 @@ app.use(
       maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
       sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
     },
-  })
+  }) as any
 );
 
 // Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.initialize() as any);
+app.use(passport.session() as any);
 
 // Facebook OAuth routes (still needed for initial auth flow)
 // Note: Start with minimal scope - add 'email' later after Facebook app approval
@@ -125,8 +125,8 @@ app.get('/api/auth/facebook/callback',
 // tRPC endpoint
 app.use('/api/trpc', trpcExpress.createExpressMiddleware({
   router: appRouter,
-  createContext,
-}));
+  createContext: createContext as any,
+}) as any);
 
 // API Health check (for external monitoring)
 app.get('/api/health', (req, res) => {
