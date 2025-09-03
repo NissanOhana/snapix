@@ -19,6 +19,7 @@ interface AuthState {
   // Actions
   setUser: (user: User | null) => void;
   login: () => void;
+  loginWithGoogle: () => void;
   loginAsGuest: () => void;
   logout: () => Promise<void>;
   fetchUser: () => Promise<void>;
