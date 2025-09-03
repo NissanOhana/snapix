@@ -140,41 +140,63 @@ app.get('/api/health', (req, res) => {
 
 // Serve React app in production
 if (process.env.NODE_ENV === 'production') {
-  // Multiple possible paths for different deployment structures
-  const possibleStaticPaths = [
-    path.join(__dirname, '../../../packages/snapix-app/dist'),
-    path.join(__dirname, '../../snapix-app/dist'),
-    path.join(__dirname, '../snapix-app/dist'),
-    path.join(process.cwd(), 'packages/snapix-app/dist'),
-    path.join(process.cwd(), 'dist')
-  ];
-
-  let staticPath = null;
   const fs = require('fs');
   
+  // When compiled, __dirname is packages/snapix-server/dist
+  // We need to go up to reach packages/snapix-app/dist
+  const possibleStaticPaths = [
+    // From compiled location (packages/snapix-server/dist)
+    path.join(__dirname, '../../snapix-app/dist'),
+    // From project root
+    path.join(process.cwd(), 'packages/snapix-app/dist'),
+    // For Render.com deployment structure
+    path.join(process.cwd(), '../snapix-app/dist'),
+    // Alternative paths
+    path.join(__dirname, '../../../packages/snapix-app/dist'),
+    path.resolve(__dirname, '../../snapix-app/dist')
+  ];
+
+  console.log('🔍 Looking for static files...');
+  console.log('Current directory:', __dirname);
+  console.log('Working directory:', process.cwd());
+  
+  let staticPath = null;
+  
   for (const testPath of possibleStaticPaths) {
+    console.log(`Checking: ${testPath}`);
     if (fs.existsSync(testPath)) {
-      staticPath = testPath;
-      break;
+      const indexExists = fs.existsSync(path.join(testPath, 'index.html'));
+      console.log(`  ✓ Path exists, index.html: ${indexExists}`);
+      if (indexExists) {
+        staticPath = testPath;
+        break;
+      }
+    } else {
+      console.log(`  ✗ Path does not exist`);
     }
   }
 
   if (staticPath) {
-    console.log(`📁 Serving static files from: ${staticPath}`);
+    console.log(`✅ Serving static files from: ${staticPath}`);
     app.use(express.static(staticPath));
     
     app.get('*', (req, res) => {
       const indexPath = path.join(staticPath, 'index.html');
-      if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-      } else {
-        res.status(404).send('Static files not found');
-      }
+      res.sendFile(indexPath);
     });
   } else {
-    console.error('❌ Could not find static files directory');
+    console.error('❌ Could not find static files directory with index.html');
+    console.error('Build may have failed or files are in unexpected location');
+    
+    // Fallback: show helpful error
     app.get('*', (req, res) => {
-      res.status(500).send('Static files not configured properly');
+      res.status(500).json({
+        error: 'Static files not found',
+        __dirname,
+        cwd: process.cwd(),
+        checkedPaths: possibleStaticPaths,
+        hint: 'Ensure both frontend and backend are built successfully'
+      });
     });
   }
 }
