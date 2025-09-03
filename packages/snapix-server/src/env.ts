@@ -14,6 +14,15 @@ export const requiredEnvVars = {
   SESSION_SECRET: process.env.SESSION_SECRET,
 };
 
+// Optional but recommended environment variables
+export const optionalEnvVars = {
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  N8N_WEBHOOK_URL: process.env.N8N_WEBHOOK_URL,
+  N8N_API_KEY: process.env.N8N_API_KEY,
+  CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:5173',
+  FACEBOOK_GRAPH_VERSION: process.env.FACEBOOK_GRAPH_VERSION || 'v19.0',
+};
+
 // Validate required environment variables
 const missingVars = Object.entries(requiredEnvVars)
   .filter(([key, value]) => !value)

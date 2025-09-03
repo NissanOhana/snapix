@@ -109,7 +109,7 @@ app.get('/api/auth/facebook/callback',
       // You'll need to import AuthService here
       const authService = (await import('./services/auth.service')).default;
       const { accessToken, refreshToken } = authService.generateTokens(user);
-      await authService.saveRefreshToken(user._id.toString(), refreshToken);
+      await authService.saveRefreshToken((user._id as any).toString(), refreshToken);
 
       // Redirect with tokens
       res.redirect(

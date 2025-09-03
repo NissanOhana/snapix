@@ -1,3 +1,6 @@
+# Legacy app (local only - do not push)
+ad-amigo-ai-8e4a9d7a/
+
 # Dependencies
 node_modules/
 package-lock.json

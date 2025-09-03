@@ -5,16 +5,16 @@ import { TokenPayload } from '../types';
 export class AuthService {
   generateTokens(user: IUser) {
     const payload: TokenPayload = {
-      id: user._id.toString(),
+      id: (user._id as any).toString(),
       email: user.email,
     };
 
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET!, {
-      expiresIn: process.env.JWT_EXPIRE,
+      expiresIn: process.env.JWT_EXPIRE || '7d',
     });
 
     const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET!, {
-      expiresIn: process.env.JWT_REFRESH_EXPIRE,
+      expiresIn: process.env.JWT_REFRESH_EXPIRE || '30d',
     });
 
     return { accessToken, refreshToken };

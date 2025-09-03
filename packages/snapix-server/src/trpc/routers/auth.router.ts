@@ -40,7 +40,7 @@ export const authRouter = router({
       });
 
       const tokens = authService.generateTokens(user);
-      await authService.saveRefreshToken(user._id.toString(), tokens.refreshToken);
+      await authService.saveRefreshToken((user._id as any).toString(), tokens.refreshToken);
 
       await User.findByIdAndUpdate(user._id, { lastLogin: new Date() });
 
@@ -88,7 +88,7 @@ export const authRouter = router({
       }
 
       const tokens = authService.generateTokens(user);
-      await authService.saveRefreshToken(user._id.toString(), tokens.refreshToken);
+      await authService.saveRefreshToken((user._id as any).toString(), tokens.refreshToken);
 
       await User.findByIdAndUpdate(user._id, { lastLogin: new Date() });
 
@@ -120,7 +120,7 @@ export const authRouter = router({
       }
 
       const tokens = authService.generateTokens(user);
-      await authService.saveRefreshToken(user._id.toString(), tokens.refreshToken);
+      await authService.saveRefreshToken((user._id as any).toString(), tokens.refreshToken);
 
       return tokens;
     }),

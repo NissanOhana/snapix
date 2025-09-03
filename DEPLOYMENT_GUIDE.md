@@ -37,9 +37,15 @@ You'll need to gather these values before deployment:
    node -e "console.log('SESSION_SECRET=' + require('crypto').randomBytes(64).toString('hex'))"
    ```
 
-4. **Optional: n8n Integration**
+4. **Optional: OpenAI Integration** (for AI chat features)
+   ```
+   OPENAI_API_KEY=your_openai_api_key
+   ```
+
+5. **Optional: n8n Integration**
    ```
    N8N_WEBHOOK_URL=https://your-n8n-instance.com/webhook/snapix
+   N8N_API_KEY=your_n8n_api_key
    ```
 
 ## 🗄️ Step 2: MongoDB Atlas Setup
