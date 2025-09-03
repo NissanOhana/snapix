@@ -36,12 +36,12 @@ function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8">
-        <div>
+        <div className="hebrew-text">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Welcome to Snapix
+            ברוכים הבאים לסנאפיקס
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Sign in to manage your Facebook integrations
+            התחברו לניהול אינטגרציות הפייסבוק שלכם
           </p>
         </div>
         
@@ -60,7 +60,7 @@ function LoginPage() {
             <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
               <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
             </svg>
-            {isLoading ? 'Connecting...' : 'Continue with Facebook'}
+{isLoading ? 'מתחבר...' : 'המשך עם פייסבוק'}
           </button>
           
           {/* Google OAuth button - only show if VITE_GOOGLE_OAUTH_ENABLED is set */}
@@ -76,7 +76,7 @@ function LoginPage() {
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
               </svg>
-              {isLoading ? 'Connecting...' : 'Continue with Google'}
+{isLoading ? 'מתחבר...' : 'המשך עם גוגל'}
             </button>
           )}
           
@@ -85,7 +85,7 @@ function LoginPage() {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-50 text-gray-500">Or</span>
+              <span className="px-2 bg-gray-50 text-gray-500 hebrew-text">או</span>
             </div>
           </div>
           
@@ -97,16 +97,16 @@ function LoginPage() {
             <svg className="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            {isLoading ? 'Loading...' : 'Continue as Guest'}
+{isLoading ? 'טוען...' : 'המשך כאורח'}
           </button>
         </div>
         
-        <div className="text-center">
+        <div className="text-center hebrew-text">
           <p className="text-xs text-gray-500">
-            Guest users have limited access to features.
+            למשתמשי אורח יש גישה מוגבלת לתכונות.
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            Sign in with Facebook for full functionality.
+            התחברו עם פייסבוק לפונקציונליות מלאה.
           </p>
         </div>
       </div>
