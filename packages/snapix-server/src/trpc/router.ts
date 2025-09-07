@@ -6,7 +6,6 @@ import { agentsRouter } from './routers/agents.router';
 import { facebookAuthRouter } from './routers/facebook-auth.router';
 import { campaignsRouter } from './routers/campaigns.router';
 import { aiRouter } from './routers/ai.router';
-import { debugRouter } from './routers/debug.router';
 
 export const appRouter = router({
   auth: authRouter,
@@ -16,7 +15,6 @@ export const appRouter = router({
   facebookAuth: facebookAuthRouter,
   campaigns: campaignsRouter,
   ai: aiRouter,
-  debug: debugRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { createFileRoute, Navigate } from '@tanstack/react-router';
 import { useAuth } from '@/hooks/useAuth';
 import { useFacebookData } from '@/hooks/useFacebookData';
@@ -52,8 +52,7 @@ function DashboardPage() {
     refreshCampaigns, 
     isRefreshing,
     campaignsError,
-    updateFilters,
-    currentFilters
+    updateFilters
   } = useCampaigns({
     startDate,
     endDate
