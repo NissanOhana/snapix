@@ -9,8 +9,8 @@ export const campaignsRouter = router({
       forceRefresh: z.boolean().optional().default(false),
       limit: z.number().min(1).max(100).optional().default(50),
       status: z.array(z.string()).optional().default(['ACTIVE', 'PAUSED']),
-      startDate: z.string().optional(),
-      endDate: z.string().optional(),
+      startDate: z.string().optional().describe('Start date in YYYY-MM-DD format for data filtering'),
+      endDate: z.string().optional().describe('End date in YYYY-MM-DD format for data filtering'),
     }))
     .query(async ({ ctx, input }) => {
       try {

@@ -5,8 +5,8 @@ export interface CampaignFilters {
   forceRefresh?: boolean;
   limit?: number;
   status?: string[];
-  startDate?: string;
-  endDate?: string;
+  startDate?: string; // YYYY-MM-DD format
+  endDate?: string;   // YYYY-MM-DD format
 }
 
 export const useCampaigns = (initialFilters: CampaignFilters = {}) => {
@@ -51,6 +51,8 @@ export const useCampaigns = (initialFilters: CampaignFilters = {}) => {
 
   const updateFilters = (newFilters: Partial<CampaignFilters>) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
+    // Trigger refetch with new filters
+    setTimeout(() => refetchCampaigns(), 100);
   };
 
   const refreshCampaigns = async () => {

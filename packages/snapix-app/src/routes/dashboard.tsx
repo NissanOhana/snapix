@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { createFileRoute, Navigate } from '@tanstack/react-router';
 import { useAuth } from '@/hooks/useAuth';
 import { useFacebookData } from '@/hooks/useFacebookData';
@@ -13,7 +14,8 @@ import {
   MousePointer,
   TrendingUp,
   RefreshCw,
-  Activity
+  Activity,
+  Calendar
 } from 'lucide-react';
 
 export const Route = createFileRoute('/dashboard')({
@@ -24,6 +26,24 @@ function DashboardPage() {
   const { user, isAuthenticated, logout } = useAuth();
   const isGuest = user?.isGuest || false;
   const { fbUser, pages, isLoadingPages } = useFacebookData();
+  
+  // Calculate default date range (last 30 days)
+  const getDefaultDateRange = () => {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(end.getDate() - 30);
+    
+    return {
+      startDate: start.toISOString().split('T')[0],
+      endDate: end.toISOString().split('T')[0]
+    };
+  };
+  
+  // Date range state with default values
+  const defaultDates = getDefaultDateRange();
+  const [startDate, setStartDate] = useState(defaultDates.startDate);
+  const [endDate, setEndDate] = useState(defaultDates.endDate);
+  
   const { 
     campaigns, 
     summary, 
@@ -31,8 +51,13 @@ function DashboardPage() {
     isLoadingSummary, 
     refreshCampaigns, 
     isRefreshing,
-    campaignsError
-  } = useCampaigns();
+    campaignsError,
+    updateFilters,
+    currentFilters
+  } = useCampaigns({
+    startDate,
+    endDate
+  });
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
@@ -181,16 +206,47 @@ function DashboardPage() {
           {!isGuest && (
             <>
               <div className="mb-6">
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4">
                   <h2 className="text-2xl font-bold text-gray-900 hebrew-text">סטטיסטיקות קמפיינים</h2>
-                  <button
-                    onClick={() => refreshCampaigns()}
-                    disabled={isRefreshing}
-                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
-                  >
-                    <RefreshCw className={`w-4 h-4 ml-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-                    רענון נתונים
-                  </button>
+                  
+                  <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                    {/* Date Range Picker */}
+                    <div className="flex items-center gap-2 bg-white border rounded-lg p-2 shadow-sm">
+                      <Calendar className="w-4 h-4 text-gray-500" />
+                      <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => {
+                          setStartDate(e.target.value);
+                          updateFilters({ startDate: e.target.value });
+                        }}
+                        className="text-sm border-0 focus:ring-0 focus:outline-none bg-transparent"
+                        max={endDate || undefined}
+                      />
+                      <span className="text-gray-400 text-sm">עד</span>
+                      <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => {
+                          setEndDate(e.target.value);
+                          updateFilters({ endDate: e.target.value });
+                        }}
+                        className="text-sm border-0 focus:ring-0 focus:outline-none bg-transparent"
+                        min={startDate || undefined}
+                        max={new Date().toISOString().split('T')[0]}
+                      />
+                    </div>
+                    
+                    {/* Refresh Button */}
+                    <button
+                      onClick={() => refreshCampaigns()}
+                      disabled={isRefreshing}
+                      className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-4 h-4 ml-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                      רענון נתונים
+                    </button>
+                  </div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
